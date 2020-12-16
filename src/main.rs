@@ -1,24 +1,27 @@
 mod pane;
+mod util;
+
+use crate::util::event::Event;
+use crate::util::event::Events;
 
 use std::io;
+use std::error::Error;
 use std::str;
 use std::process::Command;
 use tui::Terminal;
 use tui::backend::TermionBackend;
-//use tui::text::Text;
 use termion::raw::IntoRawMode;
-//use tui::widgets::{List, ListItem, Block, Borders};
-//use tui::widgets::Widget;
-//use tui::layout::{Layout, Constraint, Direction};
+use termion::event::Key;
 
 use pane::Pane;
 
-fn main() -> Result<(), io::Error> {
+fn main() -> Result<(), Box<dyn Error>> {
     let stdout = io::stdout().into_raw_mode()?;
     let backend = TermionBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
     terminal.hide_cursor()?;
     terminal.clear()?;
+    let events = Events::new();
 
     //main loop 
     loop {
@@ -32,6 +35,14 @@ fn main() -> Result<(), io::Error> {
             //draw main pane 
             let main_pane = Pane::new(files);
             main_pane.visualize(t);
-        })?
+        })?;
+
+        if let Event::Input(key) = events.next()? {
+            if key == Key::Char('q') {
+                break;
+            }
+        }
+
     }
+    Ok(())
 }
