@@ -1,9 +1,7 @@
 use tui::widgets::{List, ListItem, Block, Borders};
-use tui::layout::{Constraint, Direction, Layout};
 
 //Parent represents the parent direcotry, current is the current direcotry, and Child is the
 //contents of whatever the cursor is highlighting
-#[allow(dead_code)]
 pub enum PaneType {
     Parent,
     Current,
@@ -11,10 +9,9 @@ pub enum PaneType {
 }
 
 //Pane is used to represent a singular block in the terminal 
-#[allow(dead_code)]
 pub struct Pane<'a> {
     items: Vec<ListItem<'a>>,
-    ptype: PaneType,
+    pub ptype: PaneType,
 }
 
 impl Pane<'_> {
@@ -35,7 +32,9 @@ impl Pane<'_> {
     pub fn visualize(
         self,
         t: &mut tui::Frame<tui::backend::TermionBackend<termion::raw::RawTerminal<std::io::Stdout>>>,
+        rect: tui::layout::Rect,
     ){
+        /*
         let chunks = Layout::default()
             .direction(Direction::Horizontal)
             .constraints(
@@ -53,11 +52,11 @@ impl Pane<'_> {
             PaneType::Parent => chunks[0],
             PaneType::Current => chunks[1],
             PaneType::Child => chunks[2],
-        };
+        };*/
     
         let list = List::new(self.items)
             .block(Block::default().title("Cowboy").borders(Borders::ALL));
-        t.render_widget(list, size);
+        t.render_widget(list, rect);
 
     }
 }
