@@ -34,26 +34,6 @@ impl Pane<'_> {
         t: &mut tui::Frame<tui::backend::TermionBackend<termion::raw::RawTerminal<std::io::Stdout>>>,
         rect: tui::layout::Rect,
     ){
-        /*
-        let chunks = Layout::default()
-            .direction(Direction::Horizontal)
-            .constraints(
-                [
-                    Constraint::Percentage(20),
-                    Constraint::Percentage(50),
-                    Constraint::Percentage(30),
-                ]
-                .as_ref(),
-            )
-            .split(t.size());
-
-        //this seciton might be better suited for a window struct 
-        let size = match self.ptype {
-            PaneType::Parent => chunks[0],
-            PaneType::Current => chunks[1],
-            PaneType::Child => chunks[2],
-        };*/
-    
         let list = List::new(self.items)
             .block(Block::default().title("Cowboy").borders(Borders::ALL));
         t.render_widget(list, rect);
