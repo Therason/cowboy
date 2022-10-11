@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/therason/cowboy/cmd"
+	"github.com/therason/cowboy/app"
 )
 
 func main() {
-	cmd.Render()
+	app.Render()
 }
