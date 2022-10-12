@@ -10,5 +10,6 @@ var (
 
 type Cowboy struct {
 	Tview *tview.Application
-	Page *tview.Pages
+	Current *tview.List
+	Parent *tview.List
 }
