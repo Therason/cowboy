@@ -22,6 +22,16 @@ func NewList(text string) *tview.List {
 	for _, i := range files {
 		list.AddItem(i.Name(), "", 0, nil)
 	}
+
+	list.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Rune() == 'j' {
+			list.SetCurrentItem(list.GetCurrentItem() + 1)
+		}
+		if event.Rune() == 'k' {
+			list.SetCurrentItem(list.GetCurrentItem() - 1)
+		}
+		return event
+	})
 	return list
 }
 
@@ -55,6 +65,8 @@ func Render() {
 	core.App.Parent = NewList(pd)
 	core.App.Current = NewList(wd)
 
+
+
 	grid := tview.NewGrid().
 		SetColumns(30, 0).
 		SetRows(0).
@@ -62,7 +74,7 @@ func Render() {
 		AddItem(core.App.Parent, 0, 0, 1, 1, 0, 0, false).
 		AddItem(core.App.Current, 0, 1, 1, 1, 0, 0, false)
 
-	if err := core.App.Tview.SetRoot(grid, true).SetFocus(grid).Run(); err != nil {
+	if err := core.App.Tview.SetRoot(grid, true).SetFocus(core.App.Current).Run(); err != nil {
 		panic(err)
 	}
 }
