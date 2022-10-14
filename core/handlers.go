@@ -35,9 +35,13 @@ func (c *Cowboy) currentHandlers() {
 			downwardNav(c.Current)
 		case event.Rune() == 'k':
 			c.Current.SetCurrentItem(c.Current.GetCurrentItem() - 1)
-		case event.Rune() == 'h', event.Key() == tcell.KeyLeft:
+		case event.Rune() == 'h':
+			c.Tview.SetFocus(c.Parent)
+		case event.Key() == tcell.KeyLeft:
 			c.Tview.SetFocus(c.Parent)
 			downwardNav(c.Current) // Weird way to override tview.List's default nav
+		case event.Rune() == 'l':
+			c.TraverseDirDown()
 		}
 		return event
 	})
@@ -51,9 +55,13 @@ func (c *Cowboy) parentHandlers() {
 			downwardNav(c.Parent)
 		case event.Rune() == 'k':
 			c.Parent.SetCurrentItem(c.Parent.GetCurrentItem() - 1)
-		case event.Rune() == 'l', event.Key() == tcell.KeyRight:
+		case event.Rune() == 'l':
+			c.Tview.SetFocus(c.Current)
+		case event.Key() == tcell.KeyRight:
 			c.Tview.SetFocus(c.Current)
 			downwardNav(c.Parent)
+		case event.Rune() == 'h', event.Key() == tcell.KeyLeft:
+			c.TraverseDirUp()
 		}
 		return event
 	})
