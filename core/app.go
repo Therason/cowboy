@@ -5,25 +5,31 @@ import (
 	"os"
 )
 
+// Global container
 var (
 	App *Cowboy
 )
 
+// Current contains the current working directory, Parent contains its parent
 type Cowboy struct {
 	Tview *tview.Application
 	Current *tview.List
 	Parent *tview.List
 }
 
+// Initialize App's layout and content
 func (c *Cowboy) Init() error {
 	c.Tview = tview.NewApplication()
 
-
-	// Get names for directories
-	wd, pd := getWd()
+	// Get names for directories, then populate Current and Parent
+	wd, pd, e := getWd()
+	if e != nil {
+		return e
+	}
 	c.Parent = NewList(pd)
 	c.Current = NewList(wd)
 
+	// Basic layout
 	grid := tview.NewGrid().
 		SetColumns(30, 0).
 		SetRows(0).
@@ -31,6 +37,7 @@ func (c *Cowboy) Init() error {
 		AddItem(c.Parent, 0, 0, 1, 1, 0, 0, false).
 		AddItem(c.Current, 0, 1, 1, 1, 0, 0, false)
 
+	// Controls
 	c.SetHandlers()
 
 	if err := c.Tview.SetRoot(grid, true).SetFocus(c.Current).Run(); err != nil {
@@ -40,21 +47,19 @@ func (c *Cowboy) Init() error {
 }
 
 // Returns current directory and parent directory
-func getWd() (string, string) {
+func getWd() (string, string, error) {
 	currentDir, _ := os.Getwd()
+	// Need to find a better way to get the parent dir
 	os.Chdir("..")
 	parentDir, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
 	os.Chdir(currentDir)
-	return currentDir, parentDir
+	return currentDir, parentDir, err
 }
 
+// Generate list from given directory
 func NewList(text string) *tview.List {
 	list := tview.NewList()
-	list.
-		ShowSecondaryText(false).
+	list.ShowSecondaryText(false).
 		SetTitle(text).
 		SetBorder(true)
 
