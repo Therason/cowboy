@@ -1,8 +1,8 @@
 package core
 
 import (
-	"github.com/rivo/tview"
 	"github.com/gdamore/tcell/v2"
+	"github.com/rivo/tview"
 )
 
 func (c *Cowboy) SetHandlers() {
@@ -69,7 +69,7 @@ func (c *Cowboy) parentHandlers() {
 
 // Helper function for traversing a list downwards
 func downwardNav(l *tview.List) {
-	if l.GetItemCount() - 1 == l.GetCurrentItem() {
+	if l.GetItemCount()-1 == l.GetCurrentItem() {
 		l.SetCurrentItem(0)
 	} else {
 		l.SetCurrentItem(l.GetCurrentItem() + 1)

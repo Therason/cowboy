@@ -12,10 +12,10 @@ var (
 
 // Current contains the current working directory, Parent contains its parent
 type Cowboy struct {
-	Tview *tview.Application
-	Grid *tview.Grid
+	Tview   *tview.Application
+	Grid    *tview.Grid
 	Current *tview.List
-	Parent *tview.List
+	Parent  *tview.List
 }
 
 // Initialize App's layout and content
@@ -42,9 +42,9 @@ func (c *Cowboy) Init() error {
 	c.SetHandlers()
 
 	if err := c.Tview.SetRoot(c.Grid, true).SetFocus(c.Current).Run(); err != nil {
-		return err;
+		return err
 	}
-	return nil;
+	return nil
 }
 
 // Generate list from given directory
