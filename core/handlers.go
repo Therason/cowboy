@@ -5,6 +5,11 @@ import (
 	"github.com/rivo/tview"
 )
 
+var (
+	currentIndex int = 0
+	parentIndex  int = 0
+)
+
 func (c *Cowboy) SetHandlers() {
 	c.tviewHandlers()
 	c.currentHandlers()
@@ -35,13 +40,14 @@ func (c *Cowboy) currentHandlers() {
 			downwardNav(c.Current)
 		case event.Rune() == 'k':
 			c.Current.SetCurrentItem(c.Current.GetCurrentItem() - 1)
-		case event.Rune() == 'h':
+		case event.Rune() == 'h', event.Key() == tcell.KeyLeft:
+			currentIndex = c.Current.GetCurrentItem()
 			c.Tview.SetFocus(c.Parent)
-		case event.Key() == tcell.KeyLeft:
-			c.Tview.SetFocus(c.Parent)
-			downwardNav(c.Current) // Weird way to override tview.List's default nav
+			c.Current.SetCurrentItem(currentIndex)
 		case event.Rune() == 'l':
+			parentIndex = c.Current.GetCurrentItem()
 			c.TraverseDirDown()
+			c.Parent.SetCurrentItem(parentIndex)
 		}
 		return event
 	})
@@ -56,10 +62,13 @@ func (c *Cowboy) parentHandlers() {
 		case event.Rune() == 'k':
 			c.Parent.SetCurrentItem(c.Parent.GetCurrentItem() - 1)
 		case event.Rune() == 'l':
-			c.Tview.SetFocus(c.Current)
+			currentIndex = c.Current.GetCurrentItem()
+			parentIndex = c.Parent.GetCurrentItem()
+			c.ParentTraverseDirDown()
+			c.Current.SetCurrentItem(currentIndex)
+			c.Parent.SetCurrentItem(parentIndex)
 		case event.Key() == tcell.KeyRight:
-			c.Tview.SetFocus(c.Current)
-			downwardNav(c.Parent)
+			c.ParentTraverseDirDown()
 		case event.Rune() == 'h', event.Key() == tcell.KeyLeft:
 			c.TraverseDirUp()
 		}

@@ -38,6 +38,22 @@ func (c *Cowboy) TraverseDirUp() {
 	c.reloadLists()
 }
 
+// Allows parent directory to change child directory
+func (c *Cowboy) ParentTraverseDirDown() {
+	targetDir, _ := c.Parent.GetItemText(c.Parent.GetCurrentItem())
+	currentDir, _ := c.Current.GetItemText(c.Current.GetCurrentItem())
+	if targetDir != currentDir {
+		if err := os.Chdir("../" + targetDir); err != nil {
+			// Not a directory
+			return
+		}
+		c.Current.Clear()
+		c.Parent.Clear()
+		c.reloadLists()
+	}
+	c.Tview.SetFocus(c.Current)
+}
+
 // Helper function to fill Current and Parent with proper items
 func (c *Cowboy) reloadLists() {
 	current, parent, err := GetDirs()
