@@ -29,25 +29,23 @@ func (c *Cowboy) tviewHandlers() {
 // Current list controls
 func (c *Cowboy) currentHandlers() {
 	c.Current.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyLeft {
-			return nil
-		}
-		return event
-	})
-	c.Current.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch {
-		case event.Rune() == 'j':
+		case event.Rune() == 'j', event.Key() == tcell.KeyDown:
 			downwardNav(c.Current)
-		case event.Rune() == 'k':
+			return nil
+		case event.Rune() == 'k', event.Key() == tcell.KeyUp:
 			c.Current.SetCurrentItem(c.Current.GetCurrentItem() - 1)
+			return nil
 		case event.Rune() == 'h', event.Key() == tcell.KeyLeft:
 			currentIndex = c.Current.GetCurrentItem()
 			c.Tview.SetFocus(c.Parent)
 			c.Current.SetCurrentItem(currentIndex)
-		case event.Rune() == 'l':
+			return nil
+		case event.Rune() == 'l', event.Key() == tcell.KeyRight:
 			parentIndex = c.Current.GetCurrentItem()
 			c.TraverseDirDown()
 			c.Parent.SetCurrentItem(parentIndex)
+			return nil
 		}
 		return event
 	})
@@ -57,20 +55,24 @@ func (c *Cowboy) currentHandlers() {
 func (c *Cowboy) parentHandlers() {
 	c.Parent.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		switch {
-		case event.Rune() == 'j':
+		case event.Rune() == 'j', event.Key() == tcell.KeyDown:
 			downwardNav(c.Parent)
-		case event.Rune() == 'k':
+			return nil
+		case event.Rune() == 'k', event.Key() == tcell.KeyUp:
 			c.Parent.SetCurrentItem(c.Parent.GetCurrentItem() - 1)
-		case event.Rune() == 'l':
+			return nil
+		case event.Rune() == 'l', event.Key() == tcell.KeyRight:
 			currentIndex = c.Current.GetCurrentItem()
 			parentIndex = c.Parent.GetCurrentItem()
 			c.ParentTraverseDirDown()
 			c.Current.SetCurrentItem(currentIndex)
 			c.Parent.SetCurrentItem(parentIndex)
-		case event.Key() == tcell.KeyRight:
-			c.ParentTraverseDirDown()
+			return nil
 		case event.Rune() == 'h', event.Key() == tcell.KeyLeft:
+			currentIndex = c.Parent.GetCurrentItem()
 			c.TraverseDirUp()
+			c.Current.SetCurrentItem(currentIndex)
+			return nil
 		}
 		return event
 	})
