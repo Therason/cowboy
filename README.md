@@ -8,5 +8,7 @@ Command line file explorer written in Go. Currently a big WIP.
 ## Controls
 
 Navigation: `hjkl` or arrow keys
+
 Copy file: `y`
+
 Paste file: `p`
