@@ -5,6 +5,7 @@ import (
 	"github.com/rivo/tview"
 )
 
+// Store highlighted file state when traversing lists
 var (
 	currentIndex int = 0
 	parentIndex  int = 0
@@ -46,6 +47,10 @@ func (c *Cowboy) currentHandlers() {
 			c.TraverseDirDown()
 			c.Parent.SetCurrentItem(parentIndex)
 			return nil
+		case event.Rune() == 'y':
+			Yank(c.Current)
+		case event.Rune() == 'p':
+			Put(c.Current)
 		}
 		return event
 	})
@@ -73,12 +78,16 @@ func (c *Cowboy) parentHandlers() {
 			c.TraverseDirUp()
 			c.Current.SetCurrentItem(currentIndex)
 			return nil
+		case event.Rune() == 'y':
+			Yank(c.Parent)
+		case event.Rune() == 'p':
+			Put(c.Parent)
 		}
 		return event
 	})
 }
 
-// Helper function for traversing a list downwards
+// Helper function for traversing down through a list
 func downwardNav(l *tview.List) {
 	if l.GetItemCount()-1 == l.GetCurrentItem() {
 		l.SetCurrentItem(0)

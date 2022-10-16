@@ -1,3 +1,5 @@
+/* Main storage struct and app initialization */
+
 package core
 
 import (

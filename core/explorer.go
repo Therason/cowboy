@@ -47,8 +47,6 @@ func (c *Cowboy) ParentTraverseDirDown() {
 			// Not a directory
 			return
 		}
-		c.Current.Clear()
-		c.Parent.Clear()
 		c.reloadLists()
 	}
 	c.Tview.SetFocus(c.Current)
@@ -56,6 +54,8 @@ func (c *Cowboy) ParentTraverseDirDown() {
 
 // Helper function to fill Current and Parent with proper items
 func (c *Cowboy) reloadLists() {
+	c.Current.Clear()
+	c.Parent.Clear()
 	current, parent, err := GetDirs()
 	if err != nil {
 		panic(err)
