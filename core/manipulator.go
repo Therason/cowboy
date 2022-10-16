@@ -1,3 +1,5 @@
+/* File manipulation */
+
 package core
 
 import (

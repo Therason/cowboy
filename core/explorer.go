@@ -1,3 +1,5 @@
+/* Directory navigation */
+
 package core
 
 import (
