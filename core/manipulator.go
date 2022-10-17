@@ -4,6 +4,7 @@ package core
 
 import (
 	"github.com/rivo/tview"
+	cp "github.com/otiai10/copy"
 	"os"
 )
 
@@ -27,21 +28,33 @@ func Yank(l *tview.List) {
 
 // Paste a file
 func Put(l *tview.List) {
-	// Set source file buffer
-	src, err := os.ReadFile(bufferPath)
+
+
+	// Copy src buffer to destination
+	currentPath, parentPath, _ := GetDirs()
+	var dest string
+	if l == App.Current {
+		dest = currentPath + "/" + bufferName
+	} else {
+		dest = parentPath + "/" + bufferName
+	}
+
+	srcInfo, err := os.Lstat(bufferPath)
 	if err != nil {
 		panic(err)
 	}
 
-	// Copy src buffer to destination
-	currentPath, parentPath, _ := GetDirs()
-	if l == App.Current {
-		dest := currentPath + "/" + bufferName
-		err = os.WriteFile(dest, src, 0755)
+	if srcInfo.Mode().IsDir() {
+		err = cp.Copy(bufferPath, dest)
 	} else {
-		dest := parentPath + "/" + bufferName
+		// Set source file buffer
+		src, err := os.ReadFile(bufferPath)
+		if err != nil {
+			panic(err)
+		}
 		err = os.WriteFile(dest, src, 0755)
 	}
+
 
 	if err != nil {
 		panic(err)
