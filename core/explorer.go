@@ -1,3 +1,5 @@
+/* Directory navigation */
+
 package core
 
 import (
@@ -29,6 +31,7 @@ func (c *Cowboy) TraverseDirDown() {
 
 // Navigate to parent directory
 func (c *Cowboy) TraverseDirUp() {
+	// TODO: when parent traverses up, set current item to parent's parent
 	c.Current.Clear()
 	c.Parent.Clear()
 	if e := os.Chdir(".."); e != nil {

@@ -34,7 +34,7 @@ func (c *Cowboy) Init() error {
 
 	// Basic layout
 	c.Grid = tview.NewGrid().
-		SetColumns(30, 0).
+		SetColumns(40, 0).
 		SetRows(0).
 		AddItem(c.Parent, 0, 0, 1, 1, 0, 0, false).
 		AddItem(c.Current, 0, 1, 1, 1, 0, 0, false)

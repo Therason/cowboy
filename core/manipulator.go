@@ -1,6 +1,9 @@
+/* File manipulation */
+
 package core
 
 import (
+	cp "github.com/otiai10/copy"
 	"github.com/rivo/tview"
 	"os"
 )
@@ -9,6 +12,8 @@ import (
 var (
 	bufferPath string
 	bufferName string
+	bufferInfo os.FileInfo
+	buffer     []byte
 )
 
 // Sets buffer to selected file path
@@ -21,24 +26,33 @@ func Yank(l *tview.List) {
 	} else {
 		bufferPath = parentPath + "/" + bufferName
 	}
+
+	bufferInfo, _ = os.Lstat(bufferPath)
+	if !bufferInfo.Mode().IsDir() {
+		var err error
+		buffer, err = os.ReadFile(bufferPath)
+		if err != nil {
+			panic(err)
+		}
+	}
 }
 
 // Paste a file
 func Put(l *tview.List) {
-	// Set source file buffer
-	src, err := os.ReadFile(bufferPath)
-	if err != nil {
-		panic(err)
-	}
-
 	// Copy src buffer to destination
 	currentPath, parentPath, _ := GetDirs()
+	var dest string
 	if l == App.Current {
-		dest := currentPath + "/" + bufferName
-		err = os.WriteFile(dest, src, 0755)
+		dest = currentPath + "/" + bufferName
 	} else {
-		dest := parentPath + "/" + bufferName
-		err = os.WriteFile(dest, src, 0755)
+		dest = parentPath + "/" + bufferName
+	}
+
+	var err error
+	if bufferInfo.Mode().IsDir() {
+		err = cp.Copy(bufferPath, dest)
+	} else {
+		err = os.WriteFile(dest, buffer, 0755)
 	}
 
 	if err != nil {
