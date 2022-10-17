@@ -13,6 +13,7 @@ var (
 	parentIndex  int = 0
 )
 
+// Setup controls
 func (c *Cowboy) SetHandlers() {
 	c.tviewHandlers()
 	c.currentHandlers()
@@ -24,6 +25,7 @@ func (c *Cowboy) tviewHandlers() {
 	c.Tview.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Rune() == 'q' {
 			c.Tview.Stop()
+			ClearCache()
 		}
 		return event
 	})
@@ -53,6 +55,8 @@ func (c *Cowboy) currentHandlers() {
 			Yank(c.Current)
 		case event.Rune() == 'p':
 			Put(c.Current)
+		case event.Rune() == 'd':
+			Del(c.Current)
 		}
 		return event
 	})
@@ -84,6 +88,8 @@ func (c *Cowboy) parentHandlers() {
 			Yank(c.Parent)
 		case event.Rune() == 'p':
 			Put(c.Parent)
+		case event.Rune() == 'd':
+			Del(c.Parent)
 		}
 		return event
 	})
