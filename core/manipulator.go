@@ -14,6 +14,7 @@ var (
 	bufferName string
 	bufferInfo os.FileInfo
 	buffer     []byte
+	cacheDir   string
 )
 
 // Sets buffer to selected file path
@@ -35,6 +36,8 @@ func Yank(l *tview.List) {
 			panic(err)
 		}
 	}
+
+	ClearCache()
 }
 
 // Paste a file
@@ -60,4 +63,33 @@ func Put(l *tview.List) {
 	}
 
 	App.reloadLists()
+}
+
+func Del(l *tview.List) {
+	// copies file to buffer
+	Yank(l)
+	// cache directories
+	if bufferInfo.Mode().IsDir() {
+		var err error
+		cacheDir, err = os.MkdirTemp("", "cowboyCache")
+		if err != nil {
+			panic(err)
+		}
+		err = cp.Copy(bufferPath, cacheDir)
+		if err != nil {
+			panic(err)
+		}
+
+	}
+
+	os.RemoveAll(bufferPath)
+	bufferPath = cacheDir
+	App.reloadLists()
+}
+
+// Clear cached directories
+func ClearCache() {
+	if _, e := os.ReadDir(cacheDir); e == nil {
+		os.RemoveAll(cacheDir)
+	}
 }
