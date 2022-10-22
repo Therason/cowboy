@@ -3,9 +3,10 @@
 package core
 
 import (
+	"os"
+
 	cp "github.com/otiai10/copy"
 	"github.com/rivo/tview"
-	"os"
 )
 
 // Stores file to be copied
@@ -65,6 +66,7 @@ func Put(l *tview.List) {
 	App.reloadLists()
 }
 
+// Delete's a selected file or directory, copies it to buffer
 func Del(l *tview.List) {
 	// copies file to buffer
 	Yank(l)
@@ -89,7 +91,7 @@ func Del(l *tview.List) {
 
 // Clear cached directories
 func ClearCache() {
-	if _, e := os.ReadDir(cacheDir); e == nil {
+	if _, err := os.ReadDir(cacheDir); err == nil {
 		os.RemoveAll(cacheDir)
 	}
 }

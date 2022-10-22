@@ -3,8 +3,9 @@
 package core
 
 import (
-	"github.com/rivo/tview"
 	"os"
+
+	"github.com/rivo/tview"
 )
 
 // Global container
@@ -14,15 +15,17 @@ var (
 
 // Current contains the current working directory, Parent contains its parent
 type Cowboy struct {
-	Tview   *tview.Application
-	Grid    *tview.Grid
-	Current *tview.List
-	Parent  *tview.List
+	Tview    *tview.Application
+	Grid     *tview.Grid
+	Current  *tview.List
+	Parent   *tview.List
+	OpenFile *tview.TextView
 }
 
 // Initialize App's layout and content
 func (c *Cowboy) Init() error {
 	c.Tview = tview.NewApplication()
+	c.OpenFile = tview.NewTextView()
 
 	// Get names for directories, then populate Current and Parent
 	wd, pd, e := GetDirs()
