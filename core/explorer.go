@@ -20,7 +20,8 @@ func GetDirs() (string, string, error) {
 func (c *Cowboy) TraverseDirDown() {
 	targetDir, _ := c.Current.GetItemText(c.Current.GetCurrentItem())
 	if err := os.Chdir(targetDir); err != nil {
-		// Not a directory
+		// Not a directory, try to display the file
+		loadFile(targetDir)
 		return
 	}
 	c.Current.Clear()
@@ -76,4 +77,19 @@ func (c *Cowboy) reloadLists() {
 	for _, i := range parentFiles {
 		c.Parent.AddItem(i.Name(), "", 0, nil)
 	}
+}
+
+// Read data from file
+func loadFile(target string) {
+	// Read data from target
+	output, err := os.ReadFile(target)
+	if err != nil {
+		panic(err)
+	}
+
+	// TODO: format data into current grid panel
+	//fmt.Println(string(output[:]))
+	App.OpenFile.SetText(string(output[:])).SetBorder(true)
+	App.Grid.RemoveItem(App.Current).
+		AddItem(App.OpenFile, 0, 1, 1, 1, 0, 0, false)
 }
